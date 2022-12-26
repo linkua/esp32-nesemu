@@ -37,6 +37,7 @@
 #include <stdint.h>
 #include "driver/i2s.h"
 #include "sdkconfig.h"
+
 #include <spi_lcd.h>
 
 #include <psxcontroller.h>
@@ -319,14 +320,13 @@ static int logprint(const char *string)
 */
 
 int osd_init()
-{
+{   
 	log_chain_logfunc(logprint);
 
 	if (osd_init_sound())
 		return -1;
 
 	ili9341_init();
-	ili9341_write_frame(0,0,320,240,NULL);
 	vidQueue=xQueueCreate(1, sizeof(bitmap_t *));
 	xTaskCreatePinnedToCore(&videoTask, "videoTask", 2048, NULL, 5, NULL, 1);
 	osd_initinput();

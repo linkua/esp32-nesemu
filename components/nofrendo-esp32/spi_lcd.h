@@ -28,6 +28,7 @@ extern "C"
 
 void ili9341_write_frame(const uint16_t x, const uint16_t y, const uint16_t width, const uint16_t height, const uint8_t *data[]);
 void ili9341_init();
+void ili9341_test();
 
 
 #ifdef __cplusplus

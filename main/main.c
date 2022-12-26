@@ -8,6 +8,7 @@
 #include "nofrendo.h"
 #include "esp_partition.h"
 
+#include <spi_lcd.h>
 
 
 char *osd_getromdata() {
