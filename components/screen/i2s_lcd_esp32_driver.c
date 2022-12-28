@@ -327,7 +327,8 @@ static esp_err_t i2s_lcd_reg_config(i2s_dev_t *i2s_dev, uint16_t data_width, uin
     i2s_dev->int_clr.val = ~0;
 
     // Configure sampling rate
-    i2s_dev->sample_rate_conf.tx_bck_div_num = 40000000 / clk_freq; // Fws = Fbck / 2
+    //i2s_dev->sample_rate_conf.tx_bck_div_num = 40000000 / clk_freq; // Fws = Fbck / 2
+    i2s_dev->sample_rate_conf.tx_bck_div_num = 4;
     i2s_dev->sample_rate_conf.tx_bits_mod = (data_width == 8) ? 0 : 1;
     // Configuration data format
     i2s_dev->conf.tx_start = 0;

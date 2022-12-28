@@ -24,15 +24,16 @@
 #include "psxcontroller.h"
 #include "sdkconfig.h"
 
+
+
+#if CONFIG_HW_PSX_ENA
+
 #define PSX_CLK CONFIG_HW_PSX_CLK
 #define PSX_DAT CONFIG_HW_PSX_DAT
 #define PSX_ATT CONFIG_HW_PSX_ATT
 #define PSX_CMD CONFIG_HW_PSX_CMD
 
 #define DELAY() asm("nop; nop; nop; nop;nop; nop; nop; nop;nop; nop; nop; nop;nop; nop; nop; nop;")
-
-
-#if CONFIG_HW_PSX_ENA
 
 /* Sends and receives a byte from/to the PSX controller using SPI */
 static int psxSendRecv(int send) {
@@ -131,13 +132,57 @@ void psxcontrollerInit() {
 
 #else
 
+#include "gamepad.h"
+
 int psxReadInput() {
-	return 0xFFFF;
+    input_gamepad_state state;
+    gamepad_read(&state);
+
+    int result = 0;
+
+    // A
+    if (!state.values[GAMEPAD_INPUT_A])
+    {
+        result |= (1 << 13);
+    }
+
+    // B
+    if (!state.values[GAMEPAD_INPUT_B])
+    {
+        result |= (1 << 14);
+    }
+
+    // select
+    if (!state.values[GAMEPAD_INPUT_SELECT])
+        result |= (1 << 0);
+
+    // start
+    if (!state.values[GAMEPAD_INPUT_START])
+        result |= (1 << 3);
+
+    // right
+    if (!state.values[GAMEPAD_INPUT_RIGHT])
+        result |= (1 << 5);
+
+    // left
+    if (!state.values[GAMEPAD_INPUT_LEFT])
+        result |= (1 << 7);
+
+    // up
+    if (!state.values[GAMEPAD_INPUT_UP])
+        result |= (1 << 4);
+
+    // down
+    if (!state.values[GAMEPAD_INPUT_DOWN])
+        result |= (1 << 6);
+
+    return result;
 }
 
 
 void psxcontrollerInit() {
 	printf("PSX controller disabled in menuconfig; no input enabled.\n");
+	gamepad_init();     
 }
 
 #endif

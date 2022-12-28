@@ -55,12 +55,13 @@ void ili9341_init()
 {
     vTaskDelay(100 / portTICK_RATE_MS);
     lcd_ili9325_init();
-    lcd_ili9325_set_rotation(3);
+    lcd_ili9325_set_rotation(1);
     lcd_ili9325_fillRect(0, 0, 320, 240, COLOR_BLACK); 
 }
 
 void ili9341_test()
 {
+    lcd_ili9325_set_rotation(0);
     lcd_ili9325_fillRect(0, 0, 240, 320, COLOR_BLACK);
     vTaskDelay(100 / portTICK_RATE_MS);    
     lcd_ili9325_fillRect(0, 0, 240, 320, COLOR_WHITE);

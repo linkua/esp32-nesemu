@@ -235,7 +235,7 @@ void lcd_ili9325_init(void)
         .pin_num_wr = LCD_WR_PIN,
         .pin_num_rs = LCD_RS_PIN,
 		
-        .clk_freq = 10000000,  //20000000
+        .clk_freq = 10000000,
         .i2s_port = I2S_NUM_0,
         .swap_data = false,
         .buffer_size = 32000,
