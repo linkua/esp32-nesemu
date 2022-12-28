@@ -18,10 +18,10 @@ config HW_CUSTOM
 endchoice
 
 config SOUND_ENA
-	bool "Analog audio on GPIO26"
+	bool "Analog audio on GPIO25"
 	default n
 	help 
-		ESP32 will output 0-3.3V analog audio signal on GPIO26.
+		ESP32 will output 0-3.3V analog audio signal on GPIO25.
 
 
 config HW_PSX_ENA

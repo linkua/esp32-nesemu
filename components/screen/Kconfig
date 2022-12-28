@@ -1,0 +1,9 @@
+menu "LCD ILI9235"
+    
+config HW_I2S_ENA
+	bool "USE I2S to r/w"
+	default y
+	help
+		USE I2S to r/w or only use GPIO.
+
+endmenu

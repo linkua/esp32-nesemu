@@ -21,17 +21,14 @@
 
 #include "ili9325.h"
 
-#define ILI9325_2_HWI2S
 
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
 #include "i2s_lcd_driver.h"
-#endif
 
-#ifdef ILI9325_2_HWI2S
+#define ILI9325_I2S_NUM    I2S_NUM_1
+
 i2s_lcd_handle_t _i2s_lcd_handle;
 #endif
-
-#define I2S_NUM_0       (0)
 
 #define LCD_D0_PIN	(1)  
 #define LCD_D1_PIN	(3)  
@@ -81,7 +78,7 @@ static int8_t _data_num[16] = {
 
 void _writeData16b(uint16_t data) 
 {
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
     i2s_lcd_write(_i2s_lcd_handle, (const uint8_t *)&data, 2);
 #else	
     //cs
@@ -100,7 +97,7 @@ void _writeData16b(uint16_t data)
 
 void _writeCmd16b(uint16_t cmd) 
 { 
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
     i2s_lcd_write_command(_i2s_lcd_handle, (const uint8_t *)&cmd, 2);
 #else
     // cs
@@ -125,7 +122,7 @@ void _writeReg16b(uint16_t cmd, uint16_t data)
 
 void _writeData(uint16_t *pData, uint16_t len) 
 {
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
     i2s_lcd_acquire(_i2s_lcd_handle);
     i2s_lcd_write(_i2s_lcd_handle, (const uint8_t *)pData, 2*len);
     i2s_lcd_release(_i2s_lcd_handle);
@@ -210,7 +207,7 @@ void _initReg(void) {
 
 void lcd_ili9325_init(void)
 {
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
     i2s_lcd_config_t _i2s_lcd_cfg = {
         .data_width  = 16,
         .pin_data_num = {
@@ -236,7 +233,7 @@ void lcd_ili9325_init(void)
         .pin_num_rs = LCD_RS_PIN,
 		
         .clk_freq = 10000000,
-        .i2s_port = I2S_NUM_0,
+        .i2s_port = ILI9325_I2S_NUM,
         .swap_data = false,
         .buffer_size = 32000,
     };
@@ -364,7 +361,7 @@ void lcd_ili9325_fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t c
 {
   lcd_ili9325_set_window(x, y, x+w-1, y+h-1);
 
-#ifdef ILI9325_2_HWI2S
+#ifdef CONFIG_HW_I2S_ENA
   uint16_t _buf[320];
   int bufSize = w>h?w:h;
   for (int i=0;i<bufSize;i++) _buf[i]=color;

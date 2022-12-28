@@ -66,13 +66,15 @@ int osd_installtimer(int frequency, void *func, int funcsize, void *counter, int
 */
 static void (*audio_callback)(void *buffer, int length) = NULL;
 #if CONFIG_SOUND_ENA
-QueueHandle_t queue;
+#define AUDIO_I2S_NUM    I2S_NUM_0
+
 static uint16_t *audio_frame;
 #endif
 
 static void do_audio_frame() {
 
 #if CONFIG_SOUND_ENA
+        size_t bytes_written;
 	int left=DEFAULT_SAMPLERATE/NES_REFRESH_RATE;
 	while(left) {
 		int n=DEFAULT_FRAGSIZE;
@@ -83,7 +85,7 @@ static void do_audio_frame() {
 			audio_frame[i*2+1]=audio_frame[i];
 			audio_frame[i*2]=audio_frame[i];
 		}
-		i2s_write_bytes(0, audio_frame, 4*n, portMAX_DELAY);
+                i2s_write(AUDIO_I2S_NUM, audio_frame, 4*n, &bytes_written, portMAX_DELAY);
 		left-=n;
 	}
 #endif
@@ -104,26 +106,21 @@ static void osd_stopsound(void)
 static int osd_init_sound(void)
 {
 #if CONFIG_SOUND_ENA
-	audio_frame=malloc(4*DEFAULT_FRAGSIZE);
-	i2s_config_t cfg={
-		.mode=I2S_MODE_DAC_BUILT_IN|I2S_MODE_TX|I2S_MODE_MASTER,
-		.sample_rate=DEFAULT_SAMPLERATE,
-		.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,
-		.channel_format=I2S_CHANNEL_FMT_RIGHT_LEFT,
-		.communication_format=I2S_COMM_FORMAT_I2S_MSB,
-		.intr_alloc_flags=0,
-		.dma_buf_count=4,
-		.dma_buf_len=512
-	};
-	i2s_driver_install(0, &cfg, 4, &queue);
-	i2s_set_pin(0, NULL);
-	i2s_set_dac_mode(I2S_DAC_CHANNEL_LEFT_EN); 
-
-	//I2S enables *both* DAC channels; we only need DAC1.
-	//ToDo: still needed now I2S supports set_dac_mode?
-	CLEAR_PERI_REG_MASK(RTC_IO_PAD_DAC1_REG, RTC_IO_PDAC1_DAC_XPD_FORCE_M);
-	CLEAR_PERI_REG_MASK(RTC_IO_PAD_DAC1_REG, RTC_IO_PDAC1_XPD_DAC_M);
-
+	 i2s_config_t i2s_config = {
+        .mode = I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_DAC_BUILT_IN,
+        .sample_rate =  DEFAULT_SAMPLERATE,
+        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
+	    .communication_format = I2S_COMM_FORMAT_I2S_MSB,
+	    .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT,
+	    .intr_alloc_flags = 0,
+	    .dma_buf_count = 2,  
+	    .dma_buf_len = 1024, 
+	    .use_apll = 1,
+	 };
+	 //install and start i2s driver
+	 i2s_driver_install(AUDIO_I2S_NUM, &i2s_config, 0, NULL);
+	 //init DAC pad
+	 i2s_set_dac_mode(I2S_DAC_CHANNEL_RIGHT_EN);	
 #endif
 
 	audio_callback = NULL;
