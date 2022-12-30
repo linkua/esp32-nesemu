@@ -95,7 +95,7 @@ input_gamepad_state gamepad_input_read_raw()
     }
     else
     {
-        state.values[GAMEPAD_INPUT_A] = 0;
+        state.values[GAMEPAD_INPUT_A] = 1;
     }
 
     // B
@@ -109,7 +109,7 @@ input_gamepad_state gamepad_input_read_raw()
     }
     else
     {
-        state.values[GAMEPAD_INPUT_B] = 0;
+        state.values[GAMEPAD_INPUT_B] = 1;
     }
 
     return state;

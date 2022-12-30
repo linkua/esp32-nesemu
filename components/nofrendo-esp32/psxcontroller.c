@@ -25,7 +25,6 @@
 #include "sdkconfig.h"
 
 
-
 #if CONFIG_HW_PSX_ENA
 
 #define PSX_CLK CONFIG_HW_PSX_CLK

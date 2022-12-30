@@ -25,7 +25,7 @@
 #ifdef CONFIG_HW_I2S_ENA
 #include "i2s_lcd_driver.h"
 
-#define ILI9325_I2S_NUM    I2S_NUM_1
+#define ILI9325_I2S_NUM    I2S_NUM_0
 
 i2s_lcd_handle_t _i2s_lcd_handle;
 #endif
